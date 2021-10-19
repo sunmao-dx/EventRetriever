@@ -45,11 +45,16 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func handleIssueEvent(i *gitee.IssueEvent) {
 	var issue gitee_utils.Issue
 	issue.IssueID = i.Issue.Number
+	issue.IssueAction = *(i.Action)
 	issue.IssueUser = i.Issue.User.Name
 	issue.IssueUserID = i.Issue.User.Login
 	issue.IssueTime = i.Issue.CreatedAt.String()
 	issue.IssueUpdateTime = i.Issue.UpdatedAt.String()
-    issue.IssueAssignee = i.Issue.Assignee.Login
+	if i.Issue.Assignee == nil{
+		issue.IssueAssignee = ""
+	} else {
+    	issue.IssueAssignee = i.Issue.Assignee.Login
+	}
 	issue.IssueLabel = getLabels(i.Issue.Labels)
 
 	strApi := string(apiUrl[:])

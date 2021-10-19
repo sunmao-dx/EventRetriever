@@ -1,1 +1,1 @@
-http://
+http://47.243.190.108:8080/api/dataCache/pushGiteeIssue

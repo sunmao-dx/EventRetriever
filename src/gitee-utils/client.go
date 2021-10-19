@@ -23,6 +23,7 @@ type Label struct {
 
 type Issue struct {
 	IssueID string `json:"issueID"`
+	IssueAction string `json:"issueAction"`
 	IssueUser string `json:"issueUser"`
 	IssueUserID  string `json:"issueUserID"`
 	IssueTime  string `json:"issueTime"`
