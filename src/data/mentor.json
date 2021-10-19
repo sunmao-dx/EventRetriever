@@ -1,0 +1,217 @@
+[
+  {
+    "directory": "minddata",
+    "label": "comp/data",
+    "name": "jonyguo"
+  },
+  {
+    "directory": "docs",
+    "label": "good-first-issue",
+    "name": "clement_li"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/doc",
+    "name": "zhunaipan"
+  },
+  {
+    "directory": "parallel",
+    "label": "comp/parallel",
+    "name": "stsuteng"
+  },
+  {
+    "directory": "optimizer",
+    "label": "comp/optimizer",
+    "name": "zh_qh"
+  },
+  {
+    "directory": "pynative",
+    "label": "comp/pynative",
+    "name": "chujinjin"
+  },
+  {
+    "directory": "kernel_compiler",
+    "label": "comp/kernel",
+    "name": "anyrenwei"
+  },
+  {
+    "directory": "space_holder",
+    "label": "comp/runtime",
+    "name": "kisnwang"
+  },
+  {
+    "directory": "device",
+    "label": "comp/device",
+    "name": "kisnwang"
+  },
+  {
+    "directory": "space_holder",
+    "label": "comp/pipeline",
+    "name": "zh_qh"
+  },
+  {
+    "directory": "parse",
+    "label": "comp/parser",
+    "name": "zh_qh"
+  },
+  {
+    "directory": "cxx_api",
+    "label": "comp/cxx-api",
+    "name": "zhoufeng54"
+  },
+  {
+    "directory": "debug",
+    "label": "comp/debug",
+    "name": "lilongfei15"
+  },
+  {
+    "directory": "ps",
+    "label": "comp/ps",
+    "name": "cristoval"
+  },
+  {
+    "directory": "pybind_api",
+    "label": "comp/pybind-api",
+    "name": "kingxian"
+  },
+  {
+    "directory": "transform",
+    "label": "comp/transform",
+    "name": "c_34"
+  },
+  {
+    "directory": "vm",
+    "label": "comp/vm",
+    "name": "kisnwang"
+  },
+  {
+    "directory": "communication",
+    "label": "comp/py-com",
+    "name": "stsuteng"
+  },
+  {
+    "directory": "dataset",
+    "label": "comp/py-data",
+    "name": "jonyguo"
+  },
+  {
+    "directory": "lite",
+    "label": "comp/mslite",
+    "name": "zhaizhiqiang"
+  },
+  {
+    "directory": "mindrecord",
+    "label": "comp/mindrecord",
+    "name": "jonyguo"
+  },
+  {
+    "directory": "nn",
+    "label": "comp/api",
+    "name": "kingxian"
+  },
+  {
+    "directory": "ops",
+    "label": "comp/operator",
+    "name": "liangchenghui"
+  },
+  {
+    "directory": "parallel",
+    "label": "comp/py-parallel",
+    "name": "stsuteng"
+  },
+  {
+    "directory": "profiler",
+    "label": "comp/py-profiler",
+    "name": "wangyue01"
+  },
+  {
+    "directory": "train",
+    "label": "comp/train",
+    "name": "kingxian"
+  },
+  {
+    "directory": "space_holder",
+    "label": "comp/build-install",
+    "name": "zhoufeng54"
+  },
+  {
+    "directory": "model_zoo",
+    "label": "comp/modelzoo",
+    "name": "c_34"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/frontend",
+    "name": "kingxian"
+  },
+  {
+    "directory": "kernel_compiler",
+    "label": "sig/compiler",
+    "name": "zh_qh"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/executor",
+    "name": "kisnwang"
+  },
+  {
+    "directory": "model_zoo",
+    "label": "sig/modelzoo",
+    "name": "c_34"
+  },
+  {
+    "directory": "minddata",
+    "label": "sig/data",
+    "name": "liucunwei"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/graph-engine",
+    "name": "youui"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/visualization",
+    "name": "gaocongli_hw"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/security",
+    "name": "randywangze"
+  },
+  {
+    "directory": "akg",
+    "label": "sig/akg",
+    "name": "anyrenwei"
+  },
+  {
+    "directory": "lite",
+    "label": "sig/mslite",
+    "name": "zhaizhiqiang"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/mdp",
+    "name": "jianfeichen"
+  },
+  {
+    "directory": "parallel",
+    "label": "sig/parallel",
+    "name": "dr-orange"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/adaptivetraining",
+    "name": "luomai-edin"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/serving",
+    "name": "xu-yfei"
+  },
+  {
+    "directory": "space_holder",
+    "label": "sig/DX",
+    "name": "clement_li"
+  }
+]
