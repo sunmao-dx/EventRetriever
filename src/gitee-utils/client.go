@@ -487,11 +487,18 @@ func (c *client) GetRecommendation(labels string) (string, error) {
 func (c *client) SendIssue(issue Issue, apiUrl string) (string, error) {
 	// create path and map variables
 
-	var post,_ = json.Marshal(issue)
+	var post,err = json.Marshal(issue)
+	if err != nil {
+		return "Bad Json", err
+	}
+
 
 	var jsonStr = []byte(post)
 
 	req, err := http.NewRequest("POST", apiUrl, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		return "Bad Request", err
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
