@@ -10,5 +10,5 @@ spec:
         paths:
           - backend:
               serviceName: back-cluster-ip
-              servicePort: 8008
+              servicePort: 8001
             path: /

@@ -65,7 +65,6 @@ func handleIssueEvent(i *gitee.IssueEvent) {
 		fmt.Println(err.Error())
 		return
 	}
-
 }
 
 
