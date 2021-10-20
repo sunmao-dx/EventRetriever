@@ -11,11 +11,12 @@ import (
 )
 
 var token []byte
-var apiUrl []byte
 
 func getToken() []byte {
 	return token
 }
+
+
 
 func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Event.")
@@ -57,7 +58,7 @@ func handleIssueEvent(i *gitee.IssueEvent) {
 	}
 	issue.IssueLabel = getLabels(i.Issue.Labels)
 
-	strApi := string(apiUrl[:])
+	strApi := os.Getenv("api_url")
 
 	c := gitee_utils.NewClient(getToken)
 	_, err := c.SendIssue(issue, strApi)
@@ -105,8 +106,6 @@ func loadFile(path, fileType string) error {
 	switch {
 	case fileType == "token" :
 		token = byteValue
-	case fileType == "APIUrl" :
-		apiUrl = byteValue
 	default:
 		fmt.Printf("no filetype\n" )
 	}
@@ -115,7 +114,6 @@ func loadFile(path, fileType string) error {
 
 func configFile() {
 	loadFile("src/data/token.md", "token")
-	loadFile("src/data/ApiUrl.md", "APIUrl")
 }
 
 func main() {
