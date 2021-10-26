@@ -1,7 +1,10 @@
 # EventRetriever
 
-#### 介绍
-Gitee事件获取机器人
+#### Intro
+EventRetriever is a gitee event spider for datacache.
 
-#### 软件架构
-软件架构说明
+#### Architect
+![](http://assets.processon.com/chart_image/6163e23e0791290cc7819291.png)
+
+#### Domain Model
+![](http://assets.processon.com/chart_image/616428d163768921fa176b05.png)
