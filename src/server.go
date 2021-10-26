@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 )
 
 var token []byte
@@ -49,14 +50,16 @@ func handleIssueEvent(i *gitee.IssueEvent) {
 	issue.IssueAction = *(i.Action)
 	issue.IssueUser = i.Issue.User.Name
 	issue.IssueUserID = i.Issue.User.Login
-	issue.IssueTime = i.Issue.CreatedAt.String()
-	issue.IssueUpdateTime = i.Issue.UpdatedAt.String()
+	issue.IssueTime = i.Issue.CreatedAt.Format(time.RFC3339)
+	issue.IssueUpdateTime = i.Issue.UpdatedAt.Format(time.RFC3339)
 	if i.Issue.Assignee == nil{
 		issue.IssueAssignee = ""
 	} else {
     	issue.IssueAssignee = i.Issue.Assignee.Login
 	}
 	issue.IssueLabel = getLabels(i.Issue.Labels)
+
+	fmt.Println(issue)
 
 	strApi := os.Getenv("api_url")
 
