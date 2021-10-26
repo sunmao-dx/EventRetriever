@@ -54,7 +54,7 @@ func ValidateWebhook(w http.ResponseWriter, r *http.Request) (string, string, []
 		responseHTTPError(w, http.StatusForbidden, "403 Forbidden: Missing X-Gitee-Token")
 		return "", "", nil, false, http.StatusForbidden
 	}
-	contentType := r.Header.Get("content-type")
+	contentType := r.Header.Get("Content-Type")
 	if contentType != "application/json" {
 		responseHTTPError(w, http.StatusBadRequest, "400 Bad Request: Hook only accepts content-type: application/json")
 		return "", "", nil, false, http.StatusBadRequest
