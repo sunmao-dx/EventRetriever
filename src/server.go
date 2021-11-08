@@ -3,12 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	gitee_utils "gitee.com/lizi/test-bot/src/gitee-utils"
-	"gitee.com/openeuler/go-gitee/gitee"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
+
+	gitee_utils "gitee.com/lizi/test-bot/src/gitee-utils"
+	"gitee.com/openeuler/go-gitee/gitee"
 )
 
 var token []byte
@@ -16,8 +17,6 @@ var token []byte
 func getToken() []byte {
 	return token
 }
-
-
 
 func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Event received.")
@@ -52,10 +51,12 @@ func handleIssueEvent(i *gitee.IssueEvent) {
 	issue.IssueUserID = i.Issue.User.Login
 	issue.IssueTime = i.Issue.CreatedAt.Format(time.RFC3339)
 	issue.IssueUpdateTime = i.Issue.UpdatedAt.Format(time.RFC3339)
-	if i.Issue.Assignee == nil{
+	issue.IssueTitle = i.Issue.Title
+	issue.IssueContent = i.Issue.Body
+	if i.Issue.Assignee == nil {
 		issue.IssueAssignee = ""
 	} else {
-    	issue.IssueAssignee = i.Issue.Assignee.Login
+		issue.IssueAssignee = i.Issue.Assignee.Login
 	}
 	issue.IssueLabel = getLabels(i.Issue.Labels)
 
@@ -71,7 +72,6 @@ func handleIssueEvent(i *gitee.IssueEvent) {
 	}
 }
 
-
 func handleCommentEvent(i *gitee.NoteEvent) {
 	switch *(i.NoteableType) {
 	case "Issue":
@@ -85,8 +85,7 @@ func handleIssueCommentEvent(i *gitee.NoteEvent) {
 	return
 }
 
-
-func getLabels(initLabels []gitee.LabelHook) []gitee_utils.Label{
+func getLabels(initLabels []gitee.LabelHook) []gitee_utils.Label {
 	var issueLabel gitee_utils.Label
 	var issueLabels []gitee_utils.Label
 	for _, label := range initLabels {
@@ -107,10 +106,10 @@ func loadFile(path, fileType string) error {
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	switch {
-	case fileType == "token" :
+	case fileType == "token":
 		token = byteValue
 	default:
-		fmt.Printf("no filetype\n" )
+		fmt.Printf("no filetype\n")
 	}
 	return nil
 }
