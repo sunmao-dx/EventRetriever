@@ -13,7 +13,6 @@ import (
 	"gitee.com/openeuler/go-gitee/gitee"
 )
 
-var token []byte
 var repo []byte
 
 type RepoInfo struct {
@@ -22,7 +21,7 @@ type RepoInfo struct {
 }
 
 func getToken() []byte {
-	return token
+	return []byte(os.Getenv("token"))
 }
 
 func ServeHTTP(w http.ResponseWriter, r *http.Request) {
