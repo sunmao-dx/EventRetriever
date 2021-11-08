@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -12,10 +13,15 @@ import (
 	"gitee.com/openeuler/go-gitee/gitee"
 )
 
-var token []byte
+var repo []byte
+
+type RepoInfo struct {
+	Org  string `json:"org"`
+	Repo string `json:"repo"`
+}
 
 func getToken() []byte {
-	return token
+	return []byte(os.Getenv("token"))
 }
 
 func ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -43,12 +49,20 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleIssueEvent(i *gitee.IssueEvent) {
+func handleIssueEvent(i *gitee.IssueEvent) error {
 	var issue gitee_utils.Issue
+	var repoinfo RepoInfo
+	err := json.Unmarshal(repo, &repoinfo)
+	if err != nil {
+		log.Println("wrong repo", err)
+		return err
+	}
 	issue.IssueID = i.Issue.Number
 	issue.IssueAction = *(i.Action)
-	issue.IssueUser = i.Issue.User.Name
-	issue.IssueUserID = i.Issue.User.Login
+	issue.IssueUser.IssueUserID = i.Issue.User.Login
+	issue.IssueUser.IssueUserName = i.Issue.User.Name
+	issue.IssueUser.IsOrgUser = 0 //default is 0
+
 	issue.IssueTime = i.Issue.CreatedAt.Format(time.RFC3339)
 	issue.IssueUpdateTime = i.Issue.UpdatedAt.Format(time.RFC3339)
 	issue.IssueTitle = i.Issue.Title
@@ -65,11 +79,15 @@ func handleIssueEvent(i *gitee.IssueEvent) {
 	strApi := os.Getenv("api_url")
 
 	c := gitee_utils.NewClient(getToken)
-	_, err := c.SendIssue(issue, strApi)
+
+	issue.IssueUser.IsEntUser = isUserInEnt(issue.IssueUser.IssueUserID, repoinfo.Repo, c)
+
+	_, errIssue := c.SendIssue(issue, strApi)
 	if err != nil {
 		fmt.Println(err.Error())
-		return
+		return errIssue
 	}
+	return nil
 }
 
 func handleCommentEvent(i *gitee.NoteEvent) {
@@ -96,6 +114,16 @@ func getLabels(initLabels []gitee.LabelHook) []gitee_utils.Label {
 	return issueLabels
 }
 
+func isUserInEnt(login, entOrigin string, c gitee_utils.Client) int {
+	_, err := c.GetUserEnt(entOrigin, login)
+	if err != nil {
+		fmt.Println(err)
+		return 0
+	} else {
+		return 1
+	}
+}
+
 func loadFile(path, fileType string) error {
 	jsonFile, err := os.Open(path)
 	if err != nil {
@@ -106,8 +134,8 @@ func loadFile(path, fileType string) error {
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	switch {
-	case fileType == "token":
-		token = byteValue
+	case fileType == "repo":
+		repo = byteValue
 	default:
 		fmt.Printf("no filetype\n")
 	}
@@ -115,7 +143,7 @@ func loadFile(path, fileType string) error {
 }
 
 func configFile() {
-	loadFile("src/data/token.md", "token")
+	loadFile("src/data/repo.json", "repo")
 }
 
 func main() {

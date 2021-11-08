@@ -21,11 +21,17 @@ type Label struct {
 	Desciption string `json:"labelDesciption"`
 }
 
+type User struct {
+	IssueUserName string `json:"issueUserName"`
+	IssueUserID   string `json:"issueUserID"`
+	IsEntUser     int    `json:"isEntUser"`
+	IsOrgUser     int    `json:"isOrgUser"`
+}
+
 type Issue struct {
 	IssueID         string  `json:"issueID"`
 	IssueAction     string  `json:"issueAction"`
-	IssueUser       string  `json:"issueUser"`
-	IssueUserID     string  `json:"issueUserID"`
+	IssueUser       User    `json:"issueUser"`
 	IssueTime       string  `json:"issueTime"`
 	IssueUpdateTime string  `json:"issueUpdateTime"`
 	IssueAssignee   string  `json:"issueAssignee"`
