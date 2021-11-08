@@ -150,6 +150,8 @@ func _init(i gitee_utils.Issue) gitee_utils.Issue {
 	i.IssueUser.IssueUserName = "NO_NAME"
 	i.IssueUser.IsOrgUser = 0 //default is 0
 	i.IssueUser.IsEntUser = 1
+	i.IssueAssignee = "no_assignee"
+	i.IssueLabel = nil
 
 	i.IssueTime = time.Now().Format(time.RFC3339)
 	i.IssueUpdateTime = time.Now().Format(time.RFC3339)
