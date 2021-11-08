@@ -57,6 +57,7 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 		log.Println("wrong repo", err)
 		return err
 	}
+	issue = _init(issue)
 	issue.IssueID = i.Issue.Number
 	issue.IssueAction = *(i.Action)
 	issue.IssueUser.IssueUserID = i.Issue.User.Login
@@ -140,6 +141,21 @@ func loadFile(path, fileType string) error {
 		fmt.Printf("no filetype\n")
 	}
 	return nil
+}
+
+func _init(i gitee_utils.Issue) gitee_utils.Issue {
+	i.IssueID = "XXXXXX"
+	i.IssueAction = "Open"
+	i.IssueUser.IssueUserID = "no_name"
+	i.IssueUser.IssueUserName = "NO_NAME"
+	i.IssueUser.IsOrgUser = 0 //default is 0
+	i.IssueUser.IsEntUser = 1
+
+	i.IssueTime = time.Now().Format(time.RFC3339)
+	i.IssueUpdateTime = time.Now().Format(time.RFC3339)
+	i.IssueTitle = "no_title"
+	i.IssueContent = "no_content"
+	return i
 }
 
 func configFile() {
