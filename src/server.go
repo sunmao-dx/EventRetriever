@@ -11,6 +11,7 @@ import (
 
 	gitee_utils "gitee.com/lizi/test-bot/src/gitee-utils"
 	"gitee.com/openeuler/go-gitee/gitee"
+	"github.com/sirupsen/logrus"
 )
 
 var repo []byte
@@ -28,6 +29,9 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Event received.")
 	eventType, _, payload, ok, _ := gitee_utils.ValidateWebhook(w, r)
 	if !ok {
+		gitee_utils.LogInstance.WithFields(logrus.Fields{
+			"context": "gitee hook is broken",
+		}).Info("info log")
 		return
 	}
 
@@ -35,12 +39,18 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "Issue Hook":
 		var ie gitee.IssueEvent
 		if err := json.Unmarshal(payload, &ie); err != nil {
+			gitee_utils.LogInstance.WithFields(logrus.Fields{
+				"context": "gitee hook is broken",
+			}).Info("info log")
 			return
 		}
 		go handleIssueEvent(&ie)
 	case "Note Hook":
 		var ic gitee.NoteEvent
 		if err := json.Unmarshal(payload, &ic); err != nil {
+			gitee_utils.LogInstance.WithFields(logrus.Fields{
+				"context": "gitee hook is broken",
+			}).Info("info log")
 			return
 		}
 		go handleCommentEvent(&ic)
@@ -118,6 +128,9 @@ func getLabels(initLabels []gitee.LabelHook) []gitee_utils.Label {
 func isUserInEnt(login, entOrigin string, c gitee_utils.Client) int {
 	_, err := c.GetUserEnt(entOrigin, login)
 	if err != nil {
+		gitee_utils.LogInstance.WithFields(logrus.Fields{
+			"context": "Is not Enterprise member",
+		}).Info("info log")
 		fmt.Println(err)
 		return 0
 	} else {
