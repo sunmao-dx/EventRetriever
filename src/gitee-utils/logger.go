@@ -1,6 +1,7 @@
 package gitee_utils
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path"
@@ -10,7 +11,7 @@ import (
 )
 
 var (
-	logPath = "/log"
+	logPath = "src/log"
 	logFile = "retriever.log"
 )
 var LogInstance = logrus.New()
@@ -19,6 +20,14 @@ var LogInstance = logrus.New()
 func init() {
 	// 打开文件
 	logFileName := path.Join(logPath, logFile)
+
+	isFile, errFile := PathExists(logFileName)
+	if errFile != nil {
+		panic(errFile)
+	}
+	if !isFile {
+		createFileWithDir(logPath, logFile)
+	}
 
 	fileWriter, err := os.OpenFile(logFileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
@@ -47,4 +56,23 @@ func rolling(logFile string) {
 		MaxAge:     5,       // 保留过期文件的最大时间间隔,单位是天
 		Compress:   true,    // 是否需要压缩滚动日志, 使用的 gzip 压缩
 	})
+}
+
+func PathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+func createFileWithDir(filePath string, logFile string) {
+	fmt.Println(filePath)
+	os.MkdirAll(filePath, os.ModePerm)
+	fileName := path.Join(logPath, logFile)
+	file, _ := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+	defer file.Close()
 }
