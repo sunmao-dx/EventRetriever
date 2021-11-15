@@ -86,6 +86,10 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	issue.IssueLabel = getLabels(i.Issue.Labels)
 
 	fmt.Println(issue)
+	gitee_utils.LogInstance.WithFields(logrus.Fields{
+		"context": "Is not Enterprise member",
+		"issueID": issue.IssueID,
+	}).Info("info log")
 
 	strApi := os.Getenv("api_url")
 
@@ -95,6 +99,9 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 
 	_, errIssue := c.SendIssue(issue, strApi)
 	if err != nil {
+		gitee_utils.LogInstance.WithFields(logrus.Fields{
+			"context": "Send issue problem",
+		}).Info("info log")
 		fmt.Println(err.Error())
 		return errIssue
 	}
