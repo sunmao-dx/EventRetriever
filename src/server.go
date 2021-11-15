@@ -3,8 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -19,6 +17,7 @@ var repo []byte
 type RepoInfo struct {
 	Org  string `json:"org"`
 	Repo string `json:"repo"`
+	Ent  string `json:"ent"`
 }
 
 func getToken() []byte {
@@ -62,11 +61,10 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func handleIssueEvent(i *gitee.IssueEvent) error {
 	var issue gitee_utils.Issue
 	var repoinfo RepoInfo
-	err := json.Unmarshal(repo, &repoinfo)
-	if err != nil {
-		log.Println("wrong repo", err)
-		return err
-	}
+	repoinfo.Org = i.Repository.Namespace
+	repoinfo.Repo = i.Repository.Name
+	repoinfo.Ent = i.Enterprise.Name
+
 	issue = _init(issue)
 	issue.IssueID = i.Issue.Number
 	issue.IssueAction = *(i.Action)
@@ -95,14 +93,14 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 
 	c := gitee_utils.NewClient(getToken)
 
-	issue.IssueUser.IsEntUser = isUserInEnt(issue.IssueUser.IssueUserID, repoinfo.Repo, c)
+	issue.IssueUser.IsEntUser = isUserInEnt(issue.IssueUser.IssueUserID, repoinfo.Ent, c)
 
 	_, errIssue := c.SendIssue(issue, strApi)
-	if err != nil {
+	if errIssue != nil {
 		gitee_utils.LogInstance.WithFields(logrus.Fields{
 			"context": "Send issue problem",
 		}).Info("info log")
-		fmt.Println(err.Error())
+		fmt.Println(errIssue.Error())
 		return errIssue
 	}
 	return nil
@@ -145,24 +143,6 @@ func isUserInEnt(login, entOrigin string, c gitee_utils.Client) int {
 	}
 }
 
-func loadFile(path, fileType string) error {
-	jsonFile, err := os.Open(path)
-	if err != nil {
-		fmt.Println(err)
-		defer jsonFile.Close()
-		return err
-	}
-	defer jsonFile.Close()
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	switch {
-	case fileType == "repo":
-		repo = byteValue
-	default:
-		fmt.Printf("no filetype\n")
-	}
-	return nil
-}
-
 func _init(i gitee_utils.Issue) gitee_utils.Issue {
 	i.IssueID = "XXXXXX"
 	i.IssueAction = "Open"
@@ -180,12 +160,7 @@ func _init(i gitee_utils.Issue) gitee_utils.Issue {
 	return i
 }
 
-func configFile() {
-	loadFile("src/data/repo.json", "repo")
-}
-
 func main() {
-	configFile()
 	http.HandleFunc("/", ServeHTTP)
 	http.ListenAndServe(":8001", nil)
 }
