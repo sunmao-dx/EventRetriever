@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	logPath = "src/log"
-	logFile = "strategy.log"
+	logPath = "/log"
+	logFile = "retriever.log"
 )
 var LogInstance = logrus.New()
 
