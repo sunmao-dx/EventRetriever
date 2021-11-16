@@ -43,6 +43,9 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}).Info("info log")
 			return
 		}
+		gitee_utils.LogInstance.WithFields(logrus.Fields{
+			"context": "gitee hook success",
+		}).Info("info log")
 		go handleIssueEvent(&ie)
 	case "Note Hook":
 		var ic gitee.NoteEvent
@@ -52,6 +55,9 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}).Info("info log")
 			return
 		}
+		gitee_utils.LogInstance.WithFields(logrus.Fields{
+			"context": "gitee hook success",
+		}).Info("info log")
 		go handleCommentEvent(&ic)
 	default:
 		return
@@ -116,6 +122,9 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 		fmt.Println(errIssue.Error())
 		return errIssue
 	}
+	gitee_utils.LogInstance.WithFields(logrus.Fields{
+		"context": "Send issue success",
+	}).Info("info log")
 	return nil
 }
 
