@@ -63,7 +63,11 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	var repoinfo RepoInfo
 	repoinfo.Org = i.Repository.Namespace
 	repoinfo.Repo = i.Repository.Name
-	repoinfo.Ent = i.Enterprise.Name
+	if i.Enterprise == nil {
+		repoinfo.Ent = ""
+	} else {
+		repoinfo.Ent = i.Enterprise.Name
+	}
 
 	issue = _init(issue)
 	issue.IssueID = i.Issue.Number
@@ -84,17 +88,26 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	issue.IssueLabel = getLabels(i.Issue.Labels)
 
 	fmt.Println(issue)
-	gitee_utils.LogInstance.WithFields(logrus.Fields{
-		"context": "Is not Enterprise member",
-		"issueID": issue.IssueID,
-	}).Info("info log")
 
 	strApi := os.Getenv("api_url")
 
 	c := gitee_utils.NewClient(getToken)
 
-	issue.IssueUser.IsEntUser = isUserInEnt(issue.IssueUser.IssueUserID, repoinfo.Ent, c)
-
+	if repoinfo.Ent == "" {
+		issue.IssueUser.IsEntUser = 0
+		gitee_utils.LogInstance.WithFields(logrus.Fields{
+			"context": "Is not Enterprise member",
+			"issueID": issue.IssueID,
+		}).Info("info log")
+	} else {
+		issue.IssueUser.IsEntUser = isUserInEnt(issue.IssueUser.IssueUserID, repoinfo.Ent, c)
+		if issue.IssueUser.IsEntUser == 0 {
+			gitee_utils.LogInstance.WithFields(logrus.Fields{
+				"context": "Is not Enterprise member",
+				"issueID": issue.IssueID,
+			}).Info("info log")
+		}
+	}
 	_, errIssue := c.SendIssue(issue, strApi)
 	if errIssue != nil {
 		gitee_utils.LogInstance.WithFields(logrus.Fields{
