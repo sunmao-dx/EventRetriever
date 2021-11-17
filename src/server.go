@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	gitee_utils "gitee.com/lizi/test-bot/src/gitee-utils"
@@ -73,14 +74,16 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	}
 	var issue gitee_utils.Issue
 	var repoinfo RepoInfo
+	var strEnt string
 	repoinfo.Org = i.Repository.Namespace
 	repoinfo.Repo = i.Repository.Name
 	if i.Enterprise == nil {
-		repoinfo.Ent = ""
+		strEnt = ""
 	} else {
-		repoinfo.Ent = i.Enterprise.Name
+		strEnt = i.Enterprise.Url
+		strEnt = strEnt[strings.LastIndex(strEnt, "/")+1:]
 	}
-
+	repoinfo.Ent = strEnt
 	issue = _init(issue)
 	issue.IssueID = i.Issue.Number
 	issue.IssueAction = *(i.Action)
@@ -92,6 +95,7 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	issue.IssueUpdateTime = i.Issue.UpdatedAt.Format(time.RFC3339)
 	issue.IssueTitle = i.Issue.Title
 	issue.IssueContent = i.Issue.Body
+
 	if i.Issue.Assignee == nil {
 		issue.IssueAssignee = ""
 	} else {

@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"time"
 
 	"github.com/natefinch/lumberjack"
 	"github.com/sirupsen/logrus"
@@ -15,6 +16,16 @@ var (
 	logFile = "retriever.log"
 )
 var LogInstance = logrus.New()
+
+type CSTFormatter struct {
+	logrus.Formatter
+}
+
+func (u CSTFormatter) Format(e *logrus.Entry) ([]byte, error) {
+	cz := time.FixedZone("CST", 8*3600)
+	e.Time = e.Time.In(cz)
+	return u.Formatter.Format(e)
+}
 
 // 日志初始化
 func init() {
@@ -39,9 +50,7 @@ func init() {
 	// 使用滚动压缩方式记录日志
 	rolling(logFileName)
 	// 设置日志输出JSON格式
-	customFormatter := new(logrus.TextFormatter)
-	customFormatter.TimestampFormat = "2006-01-02 15:04:05"
-	LogInstance.SetFormatter(customFormatter)
+	LogInstance.SetFormatter(CSTFormatter{&logrus.JSONFormatter{}})
 	// 设置日志记录级别
 	LogInstance.SetLevel(logrus.DebugLevel)
 
