@@ -22,7 +22,8 @@ type RepoInfo struct {
 }
 
 func getToken() []byte {
-	return []byte(os.Getenv("gitee_token"))
+	//return []byte(os.Getenv("gitee_token"))
+	return []byte("adb08695039522366c4a645e1e6a3dd4")
 }
 
 func ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -112,23 +113,29 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	if repoinfo.Ent == "" {
 		issue.IssueUser.IsEntUser = 0
 		gitee_utils.LogInstance.WithFields(logrus.Fields{
-			"context": issue.IssueUser.IssueUserID + " is not an Enterprise member _ Name is null",
-			"issueID": issue.IssueID,
-			"EntName": repoinfo.Ent,
+			"context":   issue.IssueUser.IssueUserID + " is not an Enterprise member _ Name is null",
+			"issueID":   issue.IssueID,
+			"EntName":   repoinfo.Ent,
+			"isEntUser": issue.IssueUser.IsEntUser,
+			"issue":     issue,
 		}).Info("info log")
 	} else {
 		issue.IssueUser.IsEntUser = isUserInEnt(issue.IssueUser.IssueUserID, repoinfo.Ent, c)
 		if issue.IssueUser.IsEntUser == 0 {
 			gitee_utils.LogInstance.WithFields(logrus.Fields{
-				"context": issue.IssueUser.IssueUserID + " is not an Enterprise member",
-				"issueID": issue.IssueID,
-				"EntName": repoinfo.Ent,
+				"context":   issue.IssueUser.IssueUserID + " is not an Enterprise member",
+				"issueID":   issue.IssueID,
+				"EntName":   repoinfo.Ent,
+				"isEntUser": issue.IssueUser.IsEntUser,
+				"issue":     issue,
 			}).Info("info log")
 		} else {
 			gitee_utils.LogInstance.WithFields(logrus.Fields{
-				"context": issue.IssueUser.IssueUserID + " is an Enterprise member",
-				"issueID": issue.IssueID,
-				"EntName": repoinfo.Ent,
+				"context":   issue.IssueUser.IssueUserID + " is an Enterprise member",
+				"issueID":   issue.IssueID,
+				"EntName":   repoinfo.Ent,
+				"isEntUser": issue.IssueUser.IsEntUser,
+				"issue":     issue,
 			}).Info("info log")
 		}
 	}
@@ -189,7 +196,7 @@ func _init(i gitee_utils.Issue) gitee_utils.Issue {
 	i.IssueAction = "Open"
 	i.IssueUser.IssueUserID = "no_name"
 	i.IssueUser.IssueUserName = "NO_NAME"
-	i.IssueUser.IsOrgUser = 0 //default is 0
+	i.IssueUser.IsOrgUser = 0
 	i.IssueUser.IsEntUser = 1
 	i.IssueAssignee = "no_assignee"
 	i.IssueLabel = nil
