@@ -39,7 +39,9 @@ func init() {
 	// 使用滚动压缩方式记录日志
 	rolling(logFileName)
 	// 设置日志输出JSON格式
-	LogInstance.SetFormatter(&logrus.TextFormatter{})
+	customFormatter := new(logrus.TextFormatter)
+	customFormatter.TimestampFormat = "2006-01-02 15:04:05"
+	LogInstance.SetFormatter(customFormatter)
 	// 设置日志记录级别
 	LogInstance.SetLevel(logrus.DebugLevel)
 
