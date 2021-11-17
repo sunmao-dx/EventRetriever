@@ -22,8 +22,7 @@ type RepoInfo struct {
 }
 
 func getToken() []byte {
-	//return []byte(os.Getenv("gitee_token"))
-	return []byte("adb08695039522366c4a645e1e6a3dd4")
+	return []byte(os.Getenv("gitee_token"))
 }
 
 func ServeHTTP(w http.ResponseWriter, r *http.Request) {
