@@ -65,6 +65,12 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleIssueEvent(i *gitee.IssueEvent) error {
+	if *(i.Action) != "open" {
+		gitee_utils.LogInstance.WithFields(logrus.Fields{
+			"context": "the hook is not for opening a issue",
+		}).Info("info log")
+		return nil
+	}
 	var issue gitee_utils.Issue
 	var repoinfo RepoInfo
 	repoinfo.Org = i.Repository.Namespace
