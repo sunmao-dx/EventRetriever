@@ -112,20 +112,23 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	if repoinfo.Ent == "" {
 		issue.IssueUser.IsEntUser = 0
 		gitee_utils.LogInstance.WithFields(logrus.Fields{
-			"context": issue.IssueUser.IssueUserID + "Is not an Enterprise member",
+			"context": issue.IssueUser.IssueUserID + " is not an Enterprise member _ Name is null",
 			"issueID": issue.IssueID,
+			"EntName": repoinfo.Ent,
 		}).Info("info log")
 	} else {
 		issue.IssueUser.IsEntUser = isUserInEnt(issue.IssueUser.IssueUserID, repoinfo.Ent, c)
 		if issue.IssueUser.IsEntUser == 0 {
 			gitee_utils.LogInstance.WithFields(logrus.Fields{
-				"context": issue.IssueUser.IssueUserID + "Is not an Enterprise member",
+				"context": issue.IssueUser.IssueUserID + " is not an Enterprise member",
 				"issueID": issue.IssueID,
+				"EntName": repoinfo.Ent,
 			}).Info("info log")
 		} else {
 			gitee_utils.LogInstance.WithFields(logrus.Fields{
-				"context": issue.IssueUser.IssueUserID + "Is an Enterprise member",
+				"context": issue.IssueUser.IssueUserID + " is an Enterprise member",
 				"issueID": issue.IssueID,
+				"EntName": repoinfo.Ent,
 			}).Info("info log")
 		}
 	}
