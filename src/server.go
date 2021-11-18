@@ -22,7 +22,8 @@ type RepoInfo struct {
 }
 
 func getToken() []byte {
-	return []byte(os.Getenv("gitee_token"))
+	//return []byte(os.Getenv("gitee_token"))
+	return []byte("ad6f54b456024bad36bb3b5736a0ca25")
 }
 
 func ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -95,6 +96,13 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	issue.IssueUpdateTime = i.Issue.UpdatedAt.Format(time.RFC3339)
 	issue.IssueTitle = i.Issue.Title
 	issue.IssueContent = i.Issue.Body
+
+	if i.Issue.Number == "I1EL99" {
+		gitee_utils.LogInstance.WithFields(logrus.Fields{
+			"context": "the hook is a test msg",
+		}).Info("info log")
+		return nil
+	}
 
 	if i.Issue.Assignee == nil {
 		issue.IssueAssignee = ""
