@@ -187,14 +187,27 @@ func getLabels(initLabels []gitee.LabelHook) []gitee_utils.Label {
 
 func isUserInEnt(login, entOrigin string, c gitee_utils.Client) int {
 	_, err := c.GetUserEnt(entOrigin, login)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "timeout") {
+		fmt.Println(err.Error() + login + " is not an Ent memeber")
 		gitee_utils.LogInstance.WithFields(logrus.Fields{
-			"context": "Is not Enterprise member",
+			"context": err.Error() + " " + login + " is not an Ent memeber",
 		}).Info("info log")
-		fmt.Println(err)
 		return 0
 	} else {
-		return 1
+		if err == nil {
+			fmt.Println(login + " is an Ent memeber")
+			gitee_utils.LogInstance.WithFields(logrus.Fields{
+				"context": err.Error() + " " + login + " is an Ent memeber",
+			}).Info("info log")
+			return 1
+		} else {
+			fmt.Println(err.Error() + "  now, retry...")
+			gitee_utils.LogInstance.WithFields(logrus.Fields{
+				"context": err.Error() + " " + "  now, retry...",
+			}).Info("info log")
+			time.Sleep(time.Duration(5) * time.Second)
+			return isUserInEnt(login, entOrigin, c)
+		}
 	}
 }
 
