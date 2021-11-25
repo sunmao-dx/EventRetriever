@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -13,6 +14,7 @@ import (
 
 	sdk "gitee.com/openeuler/go-gitee/gitee"
 	"github.com/antihax/optional"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
@@ -494,7 +496,7 @@ func (c *client) GetRecommendation(labels string) (string, error) {
 
 func (c *client) SendIssue(issue Issue, apiUrl string) (string, error) {
 	// create path and map variables
-
+	var retries = 3
 	var post, err = json.Marshal(issue)
 	if err != nil {
 		return "Bad Json", err
@@ -509,16 +511,25 @@ func (c *client) SendIssue(issue Issue, apiUrl string) (string, error) {
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "Bad Request", err
-	}
-	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+	for retries > 0 {
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Println(err)
+			LogInstance.WithFields(logrus.Fields{
+				"context": "Send issue error, please check whether the apiUrl is active",
+			}).Info("info log")
+			retries -= 1
+		} else {
+			defer resp.Body.Close()
+			fmt.Println("response Status:", resp.Status)
+			fmt.Println("response Headers:", resp.Header)
+			body, _ := ioutil.ReadAll(resp.Body)
+			fmt.Println("response Body:", string(body))
+			break
+		}
+	}
+
 	return "Good Request", nil
 }
 
