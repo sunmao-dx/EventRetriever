@@ -194,15 +194,15 @@ func isUserInEnt(login, entOrigin string, c gitee_utils.Client) int {
 		return 0
 	} else {
 		if err == nil {
-			fmt.Println(login + " is an Ent memeber")
+			fmt.Println(" is an Ent memeber")
 			gitee_utils.LogInstance.WithFields(logrus.Fields{
-				"context": err.Error() + " " + login + " is an Ent memeber",
+				"context": login + " is an Ent memeber",
 			}).Info("info log")
 			return 1
 		} else {
 			fmt.Println(err.Error() + "  now, retry...")
 			gitee_utils.LogInstance.WithFields(logrus.Fields{
-				"context": err.Error() + " " + "  now, retry...",
+				"context": "  now, retry...",
 			}).Info("info log")
 			time.Sleep(time.Duration(5) * time.Second)
 			return isUserInEnt(login, entOrigin, c)
