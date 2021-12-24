@@ -1,4 +1,4 @@
-module gitee.com/lizi/test-bot
+module gitee.com/sunmao-dx/strategy-executor
 
 go 1.16
 

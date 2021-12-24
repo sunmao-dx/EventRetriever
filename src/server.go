@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	gitee_utils "gitee.com/lizi/test-bot/src/gitee-utils"
 	"gitee.com/openeuler/go-gitee/gitee"
+	gitee_utils "gitee.com/sunmao-dx/strategy-executor/src/gitee-utils"
 	"github.com/sirupsen/logrus"
 )
 
