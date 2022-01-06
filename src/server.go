@@ -15,12 +15,6 @@ import (
 
 var repo []byte
 
-type RepoInfo struct {
-	Org  string `json:"org"`
-	Repo string `json:"repo"`
-	Ent  string `json:"ent"`
-}
-
 func getToken() []byte {
 	return []byte(os.Getenv("gitee_token"))
 }
@@ -73,7 +67,7 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 		return nil
 	}
 	var issue gitee_utils.Issue
-	var repoinfo RepoInfo
+	var repoinfo gitee_utils.RepoInfo
 	var strEnt string
 	repoinfo.Org = i.Repository.Namespace
 	repoinfo.Repo = i.Repository.Name
@@ -95,6 +89,7 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	issue.IssueUpdateTime = i.Issue.UpdatedAt.Format(time.RFC3339)
 	issue.IssueTitle = i.Issue.Title
 	issue.IssueContent = i.Issue.Body
+	issue.RepoInfo = repoinfo
 
 	if i.Issue.Number == "I1EL99" {
 		gitee_utils.LogInstance.WithFields(logrus.Fields{

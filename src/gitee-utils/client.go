@@ -30,16 +30,23 @@ type User struct {
 	IsOrgUser     int    `json:"isOrgUser"`
 }
 
+type RepoInfo struct {
+	Org  string `json:"org"`
+	Repo string `json:"repo"`
+	Ent  string `json:"ent"`
+}
+
 type Issue struct {
-	IssueID         string  `json:"issueID"`
-	IssueAction     string  `json:"issueAction"`
-	IssueUser       User    `json:"issueUser"`
-	IssueTime       string  `json:"issueTime"`
-	IssueUpdateTime string  `json:"issueUpdateTime"`
-	IssueAssignee   string  `json:"issueAssignee"`
-	IssueLabel      []Label `json:"issueLabel"`
-	IssueTitle      string  `json:"issueTitle"`
-	IssueContent    string  `json:"issueContent"`
+	IssueID         string   `json:"issueID"`
+	IssueAction     string   `json:"issueAction"`
+	IssueUser       User     `json:"issueUser"`
+	IssueTime       string   `json:"issueTime"`
+	IssueUpdateTime string   `json:"issueUpdateTime"`
+	IssueAssignee   string   `json:"issueAssignee"`
+	IssueLabel      []Label  `json:"issueLabel"`
+	IssueTitle      string   `json:"issueTitle"`
+	IssueContent    string   `json:"issueContent"`
+	RepoInfo        RepoInfo `json:"repoInfo"`
 }
 
 var _ Client = (*client)(nil)
