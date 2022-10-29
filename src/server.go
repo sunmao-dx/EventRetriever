@@ -70,7 +70,7 @@ func handleIssueEvent(i *gitee.IssueEvent) error {
 	var repoinfo gitee_utils.RepoInfo
 	var strEnt string
 	repoinfo.Org = i.Repository.Namespace
-	repoinfo.Repo = i.Repository.Name
+	repoinfo.Repo = i.Repository.Path
 	if i.Enterprise == nil {
 		strEnt = ""
 	} else {
