@@ -34,3 +34,6 @@ Software architecture description
 4.  The most valuable open source project [GVP](https://gitee.com/gvp)
 5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
 6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+
+给个机会，我就是想试试pr的自动拉取，今天真的被薄纱了
+第5次修改，提交pr
