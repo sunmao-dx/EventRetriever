@@ -177,7 +177,7 @@ func handleIssueCommentEvent(i *gitee.NoteEvent) {
 	noteBody := i.Comment.Body
 
 	if name != "i-robot" {
-		re := regexp.MustCompile(`\/\/\S+`)
+		re := regexp.MustCompile(`\/\/\w+\/?\w+`)
 		labelsMatch := re.FindAllStringSubmatch(noteBody, -1)
 
 		var labelsToAdd []string
