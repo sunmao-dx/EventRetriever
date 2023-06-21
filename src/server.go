@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"regexp"
 
 	"gitee.com/openeuler/go-gitee/gitee"
 	gitee_utils "gitee.com/sunmao-dx/strategy-executor/src/gitee-utils"
@@ -165,7 +166,35 @@ func handleCommentEvent(i *gitee.NoteEvent) {
 }
 
 func handleIssueCommentEvent(i *gitee.NoteEvent) {
-	return
+	if *(i.Action) != "comment" {
+		return
+	}
+
+	org := i.Repository.Namespace
+	repo := i.Repository.Name
+	name := i.Comment.User.Name
+	issueNum := i.Issue.Number
+	noteBody := i.Comment.Body
+
+	if name != "i-robot" {
+		re := regexp.MustCompile(`\/\/\S+`)
+		labelsMatch := re.FindAllStringSubmatch(noteBody, -1)
+
+		var labelsToAdd []string
+		for _, labelStr := range labelsMatch {
+			labelList := strings.Split(labelStr[0], "//")
+			labelsToAdd = append(labelsToAdd, labelList[1:]...)
+		}
+
+		if len(labelsToAdd) != 0 {
+			c := gitee_utils.NewClient(getToken)
+			rese := c.AddIssueLabel(org, repo, issueNum, labelsToAdd)
+			if rese != nil {
+				fmt.Println(rese.Error())
+				return
+			}
+		}
+	}
 }
 
 func getLabels(initLabels []gitee.LabelHook) []gitee_utils.Label {
