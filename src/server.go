@@ -190,6 +190,8 @@ func handleIssueCommentEvent(i *gitee.NoteEvent) {
 			c := gitee_utils.NewClient(getToken)
 			rese := c.AddIssueLabel(org, repo, issueNum, labelsToAdd)
 			if rese != nil {
+				fmt.Println("分配标签失败")
+				fmt.Println(labelsToAdd)
 				fmt.Println(rese.Error())
 				return
 			}
