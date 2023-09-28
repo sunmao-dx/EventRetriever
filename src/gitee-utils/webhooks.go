@@ -19,13 +19,18 @@ package gitee_utils
 import (
 	"crypto/hmac"
 	"crypto/sha256"
+	"crypto/subtle"
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"os"
 
 	"github.com/sirupsen/logrus"
 )
+
+var GITEE_TOKEN_SECRET_STR = os.Getenv("GITEE_TOKEN_SECRET_STR")
 
 // ValidateWebhook ensures that the provided request conforms to the
 // format of a Gitee webhook and the payload can be validated with
@@ -64,6 +69,13 @@ func ValidateWebhook(w http.ResponseWriter, r *http.Request) (string, string, []
 	if err != nil {
 		responseHTTPError(w, http.StatusInternalServerError, "500 Internal Server Error: Failed to read request body")
 		return "", "", nil, false, http.StatusInternalServerError
+	}
+
+	generatedSign := generateSignature(eventGUID, GITEE_TOKEN_SECRET_STR)
+	isValid := compareSignatures(generatedSign, sig)
+	if isValid != true {
+		responseHTTPError(w, http.StatusForbidden, "403 Forbidden: Wrong X-Gitee-Token")
+		return "", "", nil, false, http.StatusForbidden
 	}
 
 	return eventType, eventGUID, payload, true, http.StatusOK
@@ -107,4 +119,24 @@ func validatePayload(sig string, tokenGenerator func() []byte, ps func(string) s
 		}
 	}
 	return false
+}
+
+func generateSignature(timestamp string, secret string) string {
+	stringToSign := fmt.Sprintf("%s\n%s", timestamp, secret)
+	secretEnc := []byte(secret)
+	stringToSignEnc := []byte(stringToSign)
+
+	hmacCode := hmac.New(sha256.New, secretEnc)
+	hmacCode.Write(stringToSignEnc)
+	signature := base64.StdEncoding.EncodeToString(hmacCode.Sum(nil))
+	// signatureEncoded := url.QueryEscape(signature)
+
+	return signature
+}
+
+func compareSignatures(generatedSignature string, receivedSignature string) bool {
+	generatedBytes, _ := url.QueryUnescape(generatedSignature)
+	receivedBytes, _ := url.QueryUnescape(receivedSignature)
+
+	return subtle.ConstantTimeCompare([]byte(generatedBytes), []byte(receivedBytes)) == 1
 }
